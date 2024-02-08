@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,8 +17,41 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        
+        let window = UIWindow(windowScene: windowScene)
+        self.window = window
+        
+        // Configure Firebase
+        
+        // Check authentication status and set root view controller
+        if let id = UserDefaults.standard.string(forKey: Constants.kUSERID) {
+            // User is authenticated, navigate to home screen
+            showTabBarController()
+        } else {
+            // User is not authenticated, proceed with normal app flow (e.g., show login screen)
+            showLoginScreen()
+        }
     }
+    
+    func showLoginScreen() {
+        // Example code to present the login screen
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let loginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+        window?.rootViewController = loginViewController
+        window?.makeKeyAndVisible()
+    }
+
+    func showTabBarController() {
+           // Example code to present the tab bar controller
+           let storyboard = UIStoryboard(name: "Main", bundle: nil)
+           let tabBarController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as! UITabBarController
+           window?.rootViewController = tabBarController
+           window?.makeKeyAndVisible()
+           
+           // Set the appropriate tab as active
+           tabBarController.selectedIndex = 0 // Change to the index of your home tab
+       }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
